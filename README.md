@@ -1,5 +1,5 @@
-# SynoUPS-SimpleController
-A simple tool, (currently only) to add battery testing automation to supported Synology NAS's setup with APC Back UPS.
+# SynoUPS-SController
+A simple UPS control tool, (currently only) to add battery testing automation to supported Synology NAS's setup with APC Back UPS.
 
 Synology DSM's UPS capability does not support periodically testing the UPS battery. APC Back UPS models do not have built-in self-testing, so this tool's focus is to do that. 
 
@@ -87,3 +87,9 @@ If the CLI testing worked but attempting to run from DSM interface doesn't work 
 # Attribution
 
 Thanks goes to keboose on [TrueNAS Forums](https://www.truenas.com/community/threads/is-there-a-better-way-to-poll-my-ups-for-self-test-status.75854/#post-532999) for inspiration and @renatopanda for creating a [similar tool](https://github.com/renatopanda/synology-nas-beeper) to control the audible beeping which I heavily sourced. 
+
+    
+# Ideas for future enhancements 
+- Battery Level Notifier (using triggering?)
+- Beeper controller
+- Check for, and fix UPS bugs (upssched.conf missing cancel-timer waittimeup online, and UPSSafeShutdown not working)
