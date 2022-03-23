@@ -1,6 +1,6 @@
 #!/bin/bash -e 
 
-upscmdPy="<path to upscmd.py e.g. /volume1/homes/admin/SynoUPS-SimpleBatteryTester/upscmd.py>"
+upscmdPy="<path to upscmd.py e.g. /volume<n>/path/to/upscmd.py>"
 
 if [ $# -eq 0 ]; then
 	testType="quick" # quick or deep

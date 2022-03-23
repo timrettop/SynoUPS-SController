@@ -1,4 +1,4 @@
-#! /usr/bin/python2
+#!/usr/bin/python2
 # Author: Tim Potter 
 # upscmd emulator using NUT protocol  
 
