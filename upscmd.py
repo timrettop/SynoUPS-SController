@@ -28,13 +28,13 @@ else:
 
 tn = telnetlib.Telnet("127.0.0.1", 3493)
 
-tn.write(b"USERNAME " + user.encode('utf-8') + b"\n")
-print("USERNAME: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
-
-tn.write(b"PASSWORD " + pwd.encode('utf-8') + b"\n")
-print("PASSWORD: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
-
 if cmd == "chkCmds":
+    tn.write(b"USERNAME " + user.encode('utf-8') + b"\n")
+#    print("USERNAME: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
+
+    tn.write(b"PASSWORD " + pwd.encode('utf-8') + b"\n")
+#    print("PASSWORD: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
+
     print("Checking for available commands")
     tn.write(b"LIST CMD ups\n")
     response = tn.read_until(b"END LIST CMD ups", timeout=2).decode('utf-8').strip()
@@ -46,9 +46,15 @@ if cmd == "chkCmds":
     exit(0)
 
 else:
+    tn.write(b"USERNAME " + user.encode('utf-8') + b"\n")
+    print("USERNAME: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
+
+    tn.write(b"PASSWORD " + pwd.encode('utf-8') + b"\n")
+    print("PASSWORD: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
+
     tn.write(b"INSTCMD ups " + cmd.encode('utf-8') + b"\n")
     response = tn.read_until(b"OK", timeout=2).decode('utf-8')
-    print("INSTCMD ups " + cmd + ": " + response.strip())
+    print("COMMAND Executed ups " + cmd + ": " + response.strip())
 
     if response.strip() != "OK":
         tn.write(b"LIST CMD ups\n")
