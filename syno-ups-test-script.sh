@@ -13,7 +13,7 @@ fi
 
 echo "Starting -- $(date)"
 echo "Starting ${testType} test"
-python2 ${upscmdPy} test.battery.start.${testType}
+python ${upscmdPy} test.battery.start.${testType}
 echo "Waiting for test results..."
 
 #Set iterations to 20 for quick test and 1440 for deep test

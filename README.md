@@ -3,6 +3,7 @@ A simple script to add battery testing automation to supported Synology NAS's se
 
 Synology DSM's UPS capability does not support periodically testing the UPS battery. APC Back UPS models do not have built-in self-testing, so this tool's focus is to do that. 
 
+This script was validated against DSM7 OS with python2 and python3, however it should also with DSM6/python2
 
 ## Howto:
 
@@ -48,7 +49,14 @@ sudo vim /root/upscmd.py
 
 The upscmd.py script content:
 ```python
-#!/usr/bin/python2
+#!/usr/bin/python
+# upscmd emulator using NUT protocol with support for py2 and py3 requirements
+
+# TODO:
+# Support outside APC Back Ups Pro
+# -- Blocked by lack of devices
+
+# NUT protocol for reference: https://networkupstools.org/docs/developer-guide.chunked/ar01s09.html
 
 import sys
 import telnetlib
@@ -65,28 +73,26 @@ else:
 
 tn = telnetlib.Telnet("127.0.0.1", 3493)
 
-tn.write("USERNAME {0}\n".format(user))
-response = tn.read_until("OK", timeout=2)
-print("USERNAME: {0}".format(response.strip()))
+tn.write(b"USERNAME " + user.encode('utf-8') + b"\n")
+print("USERNAME: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
 
-tn.write("PASSWORD {0}\n".format(pwd))
-response = tn.read_until("OK", timeout=2)
-print("PASSWORD: {0}".format(response.strip()))
+tn.write(b"PASSWORD " + pwd.encode('utf-8') + b"\n")
+print("PASSWORD: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
 
-tn.write("INSTCMD ups {0}\n".format(cmd))
-response = tn.read_until("OK", timeout=2)
-print("INSTCMD ups {0}: {1}".format(cmd, response.strip()))
+tn.write(b"INSTCMD ups " + cmd.encode('utf-8') + b"\n")
+response = tn.read_until(b"OK", timeout=2).decode('utf-8')
+print("INSTCMD ups " + cmd + ": " + response.strip())
 
 if response.strip() != "OK":
-  tn.write("LIST CMD ups\n")
-  response = tn.read_until("END LIST CMD ups", timeout=2)
+  tn.write(b"LIST CMD ups\n")
+  response = tn.read_until(b"END LIST CMD ups", timeout=2).decode('utf-8')
   print("\n>> AVAILABLE CMDS:")
   cmds = response.splitlines()[1:-1]
   for cmd in cmds:
     print(cmd.replace("CMD ups ", "- "))
 
-tn.write("LOGOUT\n")
-print tn.read_all().rstrip("\n")
+tn.write(b"LOGOUT\n")
+print(tn.read_all().decode('utf-8').rstrip("\n"))
 ```
 **Note**: You can just clone the repo to a folder in your NAS, edit the file to set the user/pwd and then copy this and the following `syno-ups-test-script.sh` to a desired place, e.g. /volume<n>/share/scripts/
 **Note**: Be sure to set the final path into the variable at the top of syno-ups-test-script.sh to point to the full path of upscmd.py 
@@ -117,5 +123,12 @@ This schedule should ensure that the two tests would never conflict.
 
 ### 7. Run from DSM
 Test full workflow by selecting the Quick Test and clicking Run. You should hear clicking and a beep from the UPS while its testing, and in a minute or two you should receive the email report. 
+
+If the CLI testing worked but attempting to run from DSM interface doesn't work (either not hearing the testing, or receiving an email), you can troubleshoot by saving the script output results to an accessible location on the NAS, and reviewing the newest output.log. 
+
+![dsm-task-logging example](https://d1nl0vjdid2hrd.cloudfront.net/syno-debug1.jpeg)
+
+
+# Attribution
 
 Thanks goes to keboose on [TrueNAS Forums](https://www.truenas.com/community/threads/is-there-a-better-way-to-poll-my-ups-for-self-test-status.75854/#post-532999) for inspiration and @renatopanda for creating a [similar tool](https://github.com/renatopanda/synology-nas-beeper) to control the audible beeping which I heavily sourced. 
