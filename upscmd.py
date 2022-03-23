@@ -13,12 +13,18 @@ import telnetlib
 user = "<upsd user>"
 pwd = "<upsd user password>"
 
+chkcommands = (
+    "test.battery.start.quick",
+    "test.battery.start.deep"
+)
+
 if len(sys.argv) == 2:
     cmd = sys.argv[1]
 else:
     print("the ups command to issue is missing.")
     print("example: upscmd.py test.battery.start.quick")
     exit(1)
+
 
 tn = telnetlib.Telnet("127.0.0.1", 3493)
 
@@ -28,17 +34,29 @@ print("USERNAME: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
 tn.write(b"PASSWORD " + pwd.encode('utf-8') + b"\n")
 print("PASSWORD: " + tn.read_until(b"OK", timeout=2).decode('utf-8').strip())
 
-tn.write(b"INSTCMD ups " + cmd.encode('utf-8') + b"\n")
-response = tn.read_until(b"OK", timeout=2).decode('utf-8')
-print("INSTCMD ups " + cmd + ": " + response.strip())
+if cmd == "chkCmds":
+    print("Checking for available commands")
+    tn.write(b"LIST CMD ups\n")
+    response = tn.read_until(b"END LIST CMD ups", timeout=2).decode('utf-8').strip()
+    for x in chkcommands:
+        if x not in response:
+            print(x + " command not available. Exiting...")
+            exit(1)
+    print("Battery test commands are available.")
+    exit(0)
 
-if response.strip() != "OK":
-  tn.write(b"LIST CMD ups\n")
-  response = tn.read_until(b"END LIST CMD ups", timeout=2).decode('utf-8')
-  print("\n>> AVAILABLE CMDS:")
-  cmds = response.splitlines()[1:-1]
-  for cmd in cmds:
-    print(cmd.replace("CMD ups ", "- "))
+else:
+    tn.write(b"INSTCMD ups " + cmd.encode('utf-8') + b"\n")
+    response = tn.read_until(b"OK", timeout=2).decode('utf-8')
+    print("INSTCMD ups " + cmd + ": " + response.strip())
 
-tn.write(b"LOGOUT\n")
-print(tn.read_all().decode('utf-8').rstrip("\n"))
+    if response.strip() != "OK":
+        tn.write(b"LIST CMD ups\n")
+        response = tn.read_until(b"END LIST CMD ups", timeout=2).decode('utf-8')
+        print("\n>> AVAILABLE CMDS:")
+        cmds = response.splitlines()[1:-1]
+        for cmd in cmds:
+            print(cmd.replace("CMD ups ", "- "))
+
+    tn.write(b"LOGOUT\n")
+    print(tn.read_all().decode('utf-8').rstrip("\n"))
