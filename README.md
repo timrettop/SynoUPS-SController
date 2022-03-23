@@ -47,18 +47,18 @@ synoservice --restart ups-usb
 sudo vim /root/upscmd.py
 ```
 
-Enter insert mode and paste in the repo's upscmd.py script data, or clone the repo to a folder in your NAS, edit the file to set the user/pwd and then copy this and the following `syno-ups-test-script.sh` to a desired place, e.g. /volume<n>/share/scripts/
-**Note**: Be sure to set the final path into the variable at the top of syno-ups-test-script.sh to point to the full path of upscmd.py 
+Enter insert mode and paste in the repo's upscmd.py script data, or clone the repo to a folder in your NAS, edit the file to set the user/pwd and then copy this and the following `synoups-scontroller.sh` to a desired place, e.g. /volume<n>/share/scripts/
+**Note**: Be sure to set the final path into the variable at the top of synoups-scontroller.sh to point to the full path of upscmd.py 
 
 ### 5. Make the scripts executable
 ```shell
 sudo chmod u+x /volume<n>/path/to/upscmd.py
-sudo chmod u+x /volume<n>/path/to/syno-ups-test-script.sh
+sudo chmod u+x /volume<n>/path/to/synoups-scontroller.sh
 ```
 
 At this point you can test the scripts:
 ```shell
-user@nas:/$ /volume<n>/path/to/syno-ups-test-script.sh quick
+user@nas:/$ /volume<n>/path/to/synoups-scontroller.sh quick
 ```
 The script accepts two strings for the argument, "quick" and "deep".  If nothing is called, "quick" is the default. 
 
@@ -69,7 +69,7 @@ Go to the DSM Web interface (Control panel -> Task scheduler) and add two tasks:
 1. UPS Battery Quick Test
     - user: <ssh user with permissions to execute as setup in the previous steps>
     - shedule: Run on Fridays at 2am
-    - command: `bash /volume<n>/path/to/syno-ups-test-script.sh quick`
+    - command: `bash /volume<n>/path/to/synoups-scontroller.sh quick`
     - send email (your preference whether details should only be sent when the script ends abnormally)
 2. UPS Battery Deep Test (similar to above)
     - schedule: Run on specific date and repeat every 6 months at 4am. 
