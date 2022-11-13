@@ -14,10 +14,10 @@ ssh <username>@<nas_ip> -p <ssh_port>
 ```
 
 ### 2. Add a new user to upsd
-Edit the upsd.users file and add a new user account with permissions to change the beeper status
+Edit the upsd.users file and add a new user account after the existing account with permissions to run the testing commands
 ```shell
-user@nas:/$ sudo vim /usr/syno/etc/ups/upsd.users
-Password: <insert your pwd>
+user@nas:/$ sudo vim /etc/ups/upsd.users
+Password: <type your pwd>
 ```
 
 Be careful with the VIM editor! In case you are not familiar with it:
@@ -33,22 +33,25 @@ So, edit the upsd.users file and add a new user with privileges to enable/disabl
     [<upsd_username>]
         password = <upsd_pwd>
         actions = SET
-        instcmds = beeper.enable beeper.disable ups.beeper.status
+        instcmds = ALL
 ```
 
 ### 3. Restart the upsd service
+NOTE: This command no longer exists with latest DSM. 
 ```shell
 synoservice --restart ups-usb
 (wait a few seconds)
 ```
 
-### 4. Create or upload python and shell script
+If the synoservice command doesn't exist, you can run
 ```shell
-sudo vim /root/upscmd.py
+sudo upsd -c reload
 ```
 
-Enter insert mode and paste in the repo's upscmd.py script data, or clone the repo to a folder in your NAS, edit the file to set the user/pwd and then copy this and the following `synoups-scontroller.sh` to a desired place, e.g. /volume<n>/share/scripts/
-**Note**: Be sure to set the final path into the variable at the top of synoups-scontroller.sh to point to the full path of upscmd.py 
+### 4. Create or upload python and shell script
+Clone the repo to a folder in your NAS or download the files and upload. 
+Edit upscmd.py to set the user and pwd variables to the values created in Step 2.
+Edit synoups-scontroller.sh to set the full path to the upscmd.py script. 
 
 ### 5. Make the scripts executable
 ```shell
@@ -62,7 +65,7 @@ user@nas:/$ /volume<n>/path/to/synoups-scontroller.sh quick
 ```
 The script accepts two strings for the argument, "quick" and "deep".  If nothing is called, "quick" is the default. 
 
-There are some very crude validation tests that are run to more quickly identfy errors, but I'm sure there are lots more to add later. 
+There are some validation tests that are run to more quickly identfy errors, but I'm sure there are lots more to add later. 
 
 ### 6. Schedule it
 Go to the DSM Web interface (Control panel -> Task scheduler) and add two tasks:
