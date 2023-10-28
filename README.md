@@ -15,6 +15,7 @@ ssh <username>@<nas_ip> -p <ssh_port>
 
 ### 2. Add a new user to upsd
 Edit the upsd.users file and add a new user account after the existing account with permissions to run the testing commands
+NOTE: This file will be overwritten after DSM updates, resulting in an error in the script output "ERR ACCESS-DENIED". If so, update this file and restart the upsd service as described in step 3.
 ```shell
 user@nas:/$ sudo vim /etc/ups/upsd.users
 Password: <type your pwd>
