@@ -3,7 +3,7 @@ A simple UPS control tool, (currently only) to add battery testing automation to
 
 Synology DSM's UPS capability does not support periodically testing the UPS battery. APC Back UPS models do not have built-in self-testing, so this tool's focus is to do that. 
 
-This script was validated against DSM7 OS with python2 and python3, however it should also with DSM6/python2. Its tested against an APC Back-UPS Pro 1000S, but should also work with all the other models that are supported by DSM UPS Manager (both USB and SNMP Master Mode)
+This script was validated against DSM7 OS with python2 and python3, however it should also with DSM6/python2. Its tested against an APC Back-UPS Pro 1000S, but should also work with all the other models that are supported by DSM UPS Manager (both USB and SNMP Master Mode). DSM updates seem to overwrite the edited file in step 2, resulting in an errror in the script "ERR ACCESS-DENIED". If so, update the file and restart the upsd service following steps 2 and 3. 
 
 ## Howto:
 
@@ -15,7 +15,6 @@ ssh <username>@<nas_ip> -p <ssh_port>
 
 ### 2. Add a new user to upsd
 Edit the upsd.users file and add a new user account after the existing account with permissions to run the testing commands
-NOTE: This file will be overwritten after DSM updates, resulting in an error in the script output "ERR ACCESS-DENIED". If so, update this file and restart the upsd service as described in step 3.
 ```shell
 user@nas:/$ sudo vim /etc/ups/upsd.users
 Password: <type your pwd>
