@@ -35,6 +35,15 @@ So, edit the upsd.users file and add a new user with privileges to enable/disabl
         actions = SET
         instcmds = ALL
 ```
+This can be done as a single line with here doc: 
+```shell
+sudo tee -a /etc/ups/upsd.users > /dev/null <<EOT
+[<upsd_username>]
+    password = <upsd_pwd>
+    actions = SET
+    instcmds = ALL
+EOT
+```
 
 ### 3. Restart the upsd service
 NOTE: This command no longer exists with latest DSM. 
