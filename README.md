@@ -36,6 +36,7 @@ So, edit the upsd.users file and add a new user with privileges to enable/disabl
         instcmds = ALL
 ```
 This can be done as a single line with here doc: 
+NOTE: shell history is currently stored in /var/tmp/.bash_history so logout/login and clean that file if needed. 
 ```shell
 sudo tee -a /etc/ups/upsd.users > /dev/null <<EOT
 [<upsd_username>]
