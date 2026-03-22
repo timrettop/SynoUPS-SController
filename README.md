@@ -47,15 +47,15 @@ EOT
 ```
 
 ### 3. Restart the upsd service
-NOTE: This command no longer exists with latest DSM. 
 ```shell
-synoservice --restart ups-usb
+sudo synosystemctl --restart ups-usb
 (wait a few seconds)
 ```
 
-If the synoservice command doesn't exist, you can run
+NOTE: This command is no longer valid, kept as reference for older DSM versions. 
 ```shell
-sudo upsd -c reload
+synoservice --restart ups-usb
+(wait a few seconds)
 ```
 
 ### 4. Create or upload python and shell script
