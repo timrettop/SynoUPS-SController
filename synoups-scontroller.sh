@@ -24,7 +24,7 @@ echo "--- Starting Tool ${testType} pre-checks ---"
 
 # Check that upsc can communicate with upsd. If command fails to make a connection, tool will exit due to -e flag
 
-upsc ups > /dev/null 2>&1 && echo "UPS client communicating" || echo "UPS client failed, exiting..."
+upsc ups > /dev/null 2>&1 && echo "UPS client communicating" || { echo "UPS client failed, exiting..."; exit 1; }
 
 # Check for commands to be used in upscmd.py, tool will exit due to -e flag.
 # TODO: only check for input command instead.
@@ -52,17 +52,20 @@ fi
 for (( i=0; i<$j; i++)); do
     sleep 5
     result="$(/usr/bin/upsc ups ups.test.result 2>&1 | grep -v '^Init SSL')"
-    if [[ ${result} == "Done and passed" ]]; then
-        echo -e "\n"
-        echo -e "\n"
-        echo "--- UPS Test PASSED ---"
-        exit 0
-    elif [[ ${result} != "No test initiated" ]]; then
-        echo -e "\n"
-        echo -e "\n"
-        echo "--- UPS Test FAILED ---"
-        exit 1
-    fi
+    case "${result}" in
+        "Done and passed")
+            echo -e "\n"
+            echo -e "\n"
+            echo "--- UPS Test PASSED ---"
+            exit 0 ;;
+        "No test initiated" | "In progress" | "Test Scheduled" | "")
+            continue ;;
+        *)
+            echo -e "\n"
+            echo -e "\n"
+            echo "--- UPS Test FAILED ${result} ---"
+            exit 1 ;;
+    esac
 done
 
 #If reached, operation failed
