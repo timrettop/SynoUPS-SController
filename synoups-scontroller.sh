@@ -1,8 +1,16 @@
 #!/bin/bash -e
 # Wrapper Tool handling logic. Desiring a command as an argument or will default to quick test.
 
-upscmdPy="<path to upscmd.py e.g. /volume<n>/path/to/upscmd.py>"
+upscmdPyDefault="<path to upscmd.py e.g. /volume<n>/path/to/upscmd.py>"
 
+upscmdPy="$(dirname "$(readlink -f "$0")")/upscmd.py"
+if [[ ! -f ${upscmdPy} ]]; then
+    upscmdPy="${upscmdPyDefault}"
+fi
+if [[ ! -f ${upscmdPy} ]]; then
+    echo "upscmd.py not found, exiting..."
+    exit 1
+fi
 
 #What type of test to run?
 
